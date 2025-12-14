@@ -28,32 +28,38 @@ public:
     Transaksi();
     virtual ~Transaksi();
 
-    // Lifecycle
     void mulaiTransaksi(Kendaraan& kendaraan, int durasi);
     void selesaikanTransaksi();
 
-    // Tampilan
     void tampilkanRingkasan() const;
 
-    // Perhitungan
+    // ⬇⬇⬇ WAJIB ADA
     double hitungTotalBiaya() const;
-    bool isTerlambat() const;
+    double hitungTotalBayar(double tarifDendaPerHari) const;
 
-    // Getter dasar
+    bool isTerlambat() const;
+    int hitungHariTerlambat() const;
+
     int getId() const;
     Kendaraan& getKendaraan() const;
     Kendaraan* getKendaraanPtr() const;
     time_t getTanggalKembali() const;
 
-    // ===== STATUS (SATU KALI SAJA) =====
     StatusTransaksi getStatus() const;
     bool isAktif() const;
     bool isSelesai() const;
     bool sudahDibayar() const;
 
-    // Pembayaran
     bool prosesPembayaran(const std::string& metode);
     void cetakBuktiPembayaran() const;
+
+    double getBiayaSewa() const;
+    double getDenda(double tarifPerHari) const;
+    double getTotalBayar(double tarifPerHari) const;
+    void tampilkanRincianPembayaran(double tarifPerHari) const;
+    bool bayarDenda(const std::string& metode, double tarifPerHari);
+    bool sudahBayarDenda() const;
+
 
 private:
     int transaksiId;
@@ -61,10 +67,14 @@ private:
     time_t tanggalSewa;
     time_t tanggalKembali;
     double totalBiaya;
-    static int nextId; 
+    static int nextId;
+    bool dendaLunas;
+
 
     StatusTransaksi status;
     Kendaraan* kendaraan;
     Pembayaran* pembayaran;
 };
+
+
 #endif // !defined(EA_D8174133_CC3C_4997_88F3_85ED5105EDCE__INCLUDED_)

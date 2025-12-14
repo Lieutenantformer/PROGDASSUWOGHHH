@@ -13,9 +13,9 @@ class Transaksi;
 class Denda
 {
 public:
-    Denda();
-    Denda(double inputTarifPerHari);
-    virtual ~Denda();
+    Denda();                     // default constructor
+    Denda(double tarifPerHari);  // constructor dengan parameter
+    ~Denda();
 
     int hitungHariTerlambat(const Transaksi& transaksi) const;
     double hitungDenda(const Transaksi& transaksi) const;

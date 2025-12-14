@@ -103,24 +103,40 @@ int main()
 
                 if (!metodeValid)
                 {
-                    std::cout << "Transaksi dibatalkan.\n";
+                    std::cout << "Transaksi dibatalkan. Kendaraan kembali tersedia.\n";
 
                     // rollback transaksi
                     customer.kembalikanKendaraan(t->getId());
                     break;
                 }
+                // === SEWA: BAYAR SEWA SAJA ===
+                    std::cout << "Total sewa: Rp " << t->hitungTotalBiaya() << "\n";
 
+                    std::cout << "Lanjutkan pembayaran? (y/n): ";
+                    char konfirmasi;
+                    std::cin >> konfirmasi;
+
+                if (konfirmasi != 'y' && konfirmasi != 'Y')
+                    {
+                        std::cout << "Transaksi dibatalkan.\n";
+                        customer.kembalikanKendaraan(t->getId()); // rollback
+                        break;
+                    }
+
+
+                // === PROSES PEMBAYARAN (HANYA SEKALI) ===
                 if (t->prosesPembayaran(metode))
                 {
                     std::cout << "Pembayaran berhasil.\n";
                     std::cout << "ID Transaksi: " << t->getId() << "\n";
                     std::cout << "Silakan simpan ID Transaksi untuk pengembalian.\n";
                     t->cetakBuktiPembayaran();
-                    }
-                    else
-                    {
-                        std::cout << "Pembayaran gagal.\n";
-                    }
+                }
+                else
+                {
+                    std::cout << "Pembayaran gagal.\n";
+                }
+
                 break;
             }
 

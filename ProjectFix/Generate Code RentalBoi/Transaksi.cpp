@@ -4,6 +4,8 @@
 //  Created on:      14-Dec-2025 1:15:18 AM
 //  Original author: ASUS
 ///////////////////////////////////////////////////////////
+
+
 #include "Pembayaran.h"
 #include "Transaksi.h"
 #include "Kendaraan.h"
@@ -24,6 +26,7 @@ Transaksi::Transaksi()
       pembayaran(nullptr)
 {
 }
+
 
 
 // Destructor
@@ -65,8 +68,16 @@ void Transaksi::tampilkanRingkasan() const
         case StatusTransaksi::SELESAI:
             std::cout << "Selesai";
             break;
-    }
+        }
+
     std::cout << "\n";
+
+    if (isTerlambat())
+    {
+        std::cout << "⚠ TERLAMBAT! Segera kembalikan kendaraan\n";
+    }
+
+    std::cout << "-----------------------------\n";
 }
 
 // Selesaikan transaksi
@@ -83,6 +94,20 @@ double Transaksi::hitungTotalBiaya() const
 
     return kendaraan->getHargaSewa() * durasiSewa;
 }
+
+double Transaksi::hitungTotalBayar(double tarifDendaPerHari) const
+{
+    double total = hitungTotalBiaya();
+
+    int hariTerlambat = hitungHariTerlambat();
+    if (hariTerlambat > 0)
+    {
+        total += hariTerlambat * tarifDendaPerHari;
+    }
+
+    return total;
+}
+
 
 // Cek apakah terlambat
 bool Transaksi::isTerlambat() const
@@ -139,7 +164,7 @@ bool Transaksi::prosesPembayaran(const std::string& metode)
         return false;
     }
 
-    totalBiaya = hitungTotalBiaya();
+    totalBiaya = hitungTotalBiaya(); //  TANPA DENDA
 
     pembayaran = new Pembayaran();
     bool berhasil = pembayaran->prosesPembayaran(metode, totalBiaya);
@@ -149,6 +174,7 @@ bool Transaksi::prosesPembayaran(const std::string& metode)
 
     return berhasil;
 }
+
 
 void Transaksi::cetakBuktiPembayaran() const
 {
@@ -163,3 +189,66 @@ bool Transaksi::sudahDibayar() const
     return status == StatusTransaksi::DIBAYAR ||
            status == StatusTransaksi::SELESAI;
 }
+
+int Transaksi::hitungHariTerlambat() const
+{
+    if (status == StatusTransaksi::SELESAI)
+        return 0;
+
+    time_t sekarang = std::time(nullptr);
+
+    if (sekarang <= tanggalKembali)
+        return 0;
+
+    double selisih = difftime(sekarang, tanggalKembali);
+    return static_cast<int>(selisih / (24 * 60 * 60));
+}
+
+double Transaksi::getBiayaSewa() const
+{
+    return hitungTotalBiaya();
+}
+
+double Transaksi::getDenda(double tarifPerHari) const
+{
+    int hariTerlambat = hitungHariTerlambat();
+    return hariTerlambat > 0 ? hariTerlambat * tarifPerHari : 0;
+}
+
+double Transaksi::getTotalBayar(double tarifPerHari) const
+{
+    return getBiayaSewa() + getDenda(tarifPerHari);
+}
+
+void Transaksi::tampilkanRincianPembayaran(double tarifPerHari) const
+{
+    double sewa  = getBiayaSewa();
+    double denda = getDenda(tarifPerHari);
+    double total = sewa + denda;
+
+    std::cout << "Total sewa  : Rp " << sewa << "\n";
+    std::cout << "Denda       : Rp " << denda << "\n";
+    std::cout << "-------------------------\n";
+    std::cout << "Total bayar : Rp " << total << "\n";
+}
+
+bool Transaksi::bayarDenda(const std::string& metode, double tarifPerHari)
+{
+    int hari = hitungHariTerlambat();
+    if (hari <= 0)
+        return true; // tidak ada denda
+
+    double totalDenda = hari * tarifPerHari;
+
+    std::cout << "\n=== PEMBAYARAN DENDA ===\n";
+    std::cout << "Terlambat : " << hari << " hari\n";
+    std::cout << "Denda     : Rp " << totalDenda << "\n";
+
+    Pembayaran bayar;
+    if (!bayar.prosesPembayaran(metode, totalDenda))
+        return false;
+
+    dendaLunas = true;
+    return true;
+}
+
