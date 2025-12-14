@@ -8,17 +8,13 @@
 #include "Kendaraan.h"
 #include <iostream>
 
-// Default constructor
+// Constructor default
 Kendaraan::Kendaraan()
-    : kendaraanId(0),
-      nama(""),
-      jenis(""),
-      hargaSewa(0.0),
-      status(true)   // default tersedia
+    : kendaraanId(0), hargaSewa(0), status(true)
 {
 }
 
-// Parameterized constructor
+// Constructor parameter
 Kendaraan::Kendaraan(int inputId,
                      const std::string& inputNama,
                      const std::string& inputJenis,
@@ -31,41 +27,49 @@ Kendaraan::Kendaraan(int inputId,
 {
 }
 
-// Destructor
-Kendaraan::~Kendaraan()
+Kendaraan::~Kendaraan() {}
+
+// ====== GETTER ======
+
+std::string Kendaraan::getNama() const
 {
+    return nama;
 }
 
-// Ambil harga sewa
-double Kendaraan::getHargaSewa() const
+std::string Kendaraan::getJenis() const
 {
-    return hargaSewa;
-}
-
-// Cek ketersediaan
-bool Kendaraan::isTersedia() const
-{
-    return status;
-}
-
-// Ubah status kendaraan
-void Kendaraan::setStatus(bool statusBaru)
-{
-    status = statusBaru;
-}
-
-// Tampilkan informasi kendaraan
-void Kendaraan::tampilkanInfo() const
-{
-    std::cout << "ID Kendaraan   : " << kendaraanId << std::endl;
-    std::cout << "Nama           : " << nama << std::endl;
-    std::cout << "Jenis          : " << jenis << std::endl;
-    std::cout << "Harga Sewa     : " << hargaSewa << std::endl;
-    std::cout << "Status         : "
-              << (status ? "Tersedia" : "Disewa") << std::endl;
+    return jenis;
 }
 
 int Kendaraan::getId() const
 {
     return kendaraanId;
+}
+
+double Kendaraan::getHargaSewa() const
+{
+    return hargaSewa;
+}
+
+bool Kendaraan::isTersedia() const
+{
+    return status;
+}
+
+// ====== SETTER ======
+
+void Kendaraan::setStatus(bool statusBaru)
+{
+    status = statusBaru;
+}
+
+// ====== DISPLAY ======
+
+void Kendaraan::tampilkanInfo() const
+{
+    std::cout << "ID       : " << kendaraanId << "\n";
+    std::cout << "Nama     : " << nama << "\n";
+    std::cout << "Jenis    : " << jenis << "\n";
+    std::cout << "Harga    : Rp " << hargaSewa << "\n";
+    std::cout << "Status   : " << (status ? "Tersedia" : "Disewa") << "\n";
 }

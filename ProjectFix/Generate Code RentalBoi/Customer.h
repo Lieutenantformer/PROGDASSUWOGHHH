@@ -31,6 +31,7 @@ public:
     void lihatStatusPenyewaan();
     Transaksi* getTransaksiTerakhir() const;
     bool punyaTransaksiAktif() const;
+    const std::vector<Transaksi*>& getDaftarTransaksi() const;
 
 
 private:

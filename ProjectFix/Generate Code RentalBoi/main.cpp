@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+#include "FileManager.h"
 #include "Customer.h"
 #include "Kendaraan.h"
 #include "Transaksi.h"
@@ -9,9 +10,14 @@ int main()
 {
     std::cout << "=== SISTEM PENYEWAAN KENDARAAN ===\n";
 
-    std::vector<Kendaraan> daftarKendaraan;
-    daftarKendaraan.emplace_back(1, "Avanza", "Mobil", 300000);
-    daftarKendaraan.emplace_back(2, "Vario", "Motor", 100000);
+    // ===== LOAD KENDARAAN =====
+    std::vector<Kendaraan> daftarKendaraan = FileManager::muatKendaraan();
+
+    if (daftarKendaraan.empty())
+    {
+        daftarKendaraan.emplace_back(1, "Avanza", "Mobil", 300000);
+        daftarKendaraan.emplace_back(2, "Vario", "Motor", 100000);
+    }
 
     Customer customer(1, "budi", "123");
 
@@ -156,8 +162,15 @@ int main()
         }
 
         case 0:
+            std::cout << "Menyimpan data...\n";
+
+            FileManager::simpanKendaraan(daftarKendaraan);
+            FileManager::simpanTransaksi(customer.getDaftarTransaksi());
+
+            std::cout << "Data berhasil disimpan.\n";
             std::cout << "Terima kasih.\n";
             break;
+
 
         default:
             std::cout << "Pilihan tidak valid.\n";

@@ -13,8 +13,8 @@
 
 class Kendaraan;
 class Pembayaran;
+class FileManager;
 
-// ================= ENUM STATUS =================
 enum class StatusTransaksi
 {
     DISEWA,
@@ -26,40 +26,46 @@ class Transaksi
 {
 public:
     Transaksi();
-    virtual ~Transaksi();
+    ~Transaksi();
 
+    // Lifecycle
     void mulaiTransaksi(Kendaraan& kendaraan, int durasi);
     void selesaikanTransaksi();
 
+    // Tampilan
     void tampilkanRingkasan() const;
+    void tampilkanRincianPembayaran(double tarifPerHari) const;
 
-    // ⬇⬇⬇ WAJIB ADA
-    double hitungTotalBiaya() const;
-    double hitungTotalBayar(double tarifDendaPerHari) const;
-
-    bool isTerlambat() const;
+    // Perhitungan
+    double hitungTotalBiaya() const;              // sewa
     int hitungHariTerlambat() const;
+    double getDenda(double tarifPerHari) const;
+    double getBiayaSewa() const;
+    double getTotalBayar(double tarifPerHari) const;
 
+    // Pembayaran
+    bool prosesPembayaran(const std::string& metode);
+    bool bayarDenda(const std::string& metode, double tarifPerHari);
+    void cetakBuktiPembayaran() const;
+
+    // Status
+    bool isTerlambat() const;
+    bool sudahDibayar() const;
+    bool sudahBayarDenda() const;
+    bool isAktif() const;
+    bool isSelesai() const;
+    StatusTransaksi getStatus() const;
+
+    // Getter
     int getId() const;
     Kendaraan& getKendaraan() const;
     Kendaraan* getKendaraanPtr() const;
     time_t getTanggalKembali() const;
 
-    StatusTransaksi getStatus() const;
-    bool isAktif() const;
-    bool isSelesai() const;
-    bool sudahDibayar() const;
-
-    bool prosesPembayaran(const std::string& metode);
-    void cetakBuktiPembayaran() const;
-
-    double getBiayaSewa() const;
-    double getDenda(double tarifPerHari) const;
-    double getTotalBayar(double tarifPerHari) const;
-    void tampilkanRincianPembayaran(double tarifPerHari) const;
-    bool bayarDenda(const std::string& metode, double tarifPerHari);
-    bool sudahBayarDenda() const;
-
+    // File restore
+    friend class FileManager;
+    void setIdDariFile(int id);
+    void restoreDariFile(Kendaraan& k, time_t tglKembali, StatusTransaksi status);
 
 private:
     int transaksiId;
@@ -67,9 +73,9 @@ private:
     time_t tanggalSewa;
     time_t tanggalKembali;
     double totalBiaya;
-    static int nextId;
     bool dendaLunas;
 
+    static int nextId;
 
     StatusTransaksi status;
     Kendaraan* kendaraan;

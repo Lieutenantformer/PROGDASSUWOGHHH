@@ -1,0 +1,2 @@
+1|Avanza|Mobil|300000|1
+2|Vario|Motor|100000|1

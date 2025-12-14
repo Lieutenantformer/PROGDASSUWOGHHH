@@ -143,3 +143,7 @@ bool Customer::punyaTransaksiAktif() const
 }
 
 
+const std::vector<Transaksi*>& Customer::getDaftarTransaksi() const
+{
+    return daftarTransaksi;
+}

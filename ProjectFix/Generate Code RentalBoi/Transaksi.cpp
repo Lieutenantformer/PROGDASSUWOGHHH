@@ -21,11 +21,13 @@ Transaksi::Transaksi()
       tanggalSewa(0),
       tanggalKembali(0),
       totalBiaya(0.0),
+      dendaLunas(false),
       status(StatusTransaksi::DISEWA),
       kendaraan(nullptr),
       pembayaran(nullptr)
 {
 }
+
 
 
 
@@ -95,18 +97,7 @@ double Transaksi::hitungTotalBiaya() const
     return kendaraan->getHargaSewa() * durasiSewa;
 }
 
-double Transaksi::hitungTotalBayar(double tarifDendaPerHari) const
-{
-    double total = hitungTotalBiaya();
 
-    int hariTerlambat = hitungHariTerlambat();
-    if (hariTerlambat > 0)
-    {
-        total += hariTerlambat * tarifDendaPerHari;
-    }
-
-    return total;
-}
 
 
 // Cek apakah terlambat
@@ -250,5 +241,19 @@ bool Transaksi::bayarDenda(const std::string& metode, double tarifPerHari)
 
     dendaLunas = true;
     return true;
+}
+
+void Transaksi::setIdDariFile(int id)
+{
+    transaksiId = id;
+    if (id >= nextId)
+        nextId = id + 1;
+}
+
+void Transaksi::restoreDariFile(Kendaraan& k, time_t tglKembali, StatusTransaksi st)
+{
+    kendaraan = &k;
+    tanggalKembali = tglKembali;
+    status = st;
 }
 

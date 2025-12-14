@@ -8,30 +8,43 @@
 #if !defined(EA_6F47406B_4219_44bb_9E07_9365A625F8A6__INCLUDED_)
 #define EA_6F47406B_4219_44bb_9E07_9365A625F8A6__INCLUDED_
 
-
-#include <string>
 #include <vector>
+#include <string>
 
-// forward declaration
-class Transaksi;
+// Forward declarations
 class Kendaraan;
+class Transaksi;
 class User;
 
+/*
+ * FileManager
+ * ------------
+ * Utility class untuk menyimpan dan memuat data
+ * (Kendaraan, Transaksi, User) dari file.
+ *
+ * Semua method bersifat static.
+ */
 class FileManager
 {
 public:
-    FileManager();
-    virtual ~FileManager();
+    // ===== KENDARAAN =====
+    static void simpanKendaraan(const std::vector<Kendaraan>& data);
+    static std::vector<Kendaraan> muatKendaraan();
 
-    void loadData(const std::string& namaFile,
-                  std::vector<Transaksi>& daftarTransaksi,
-                  std::vector<Kendaraan>& daftarKendaraan,
-                  std::vector<User>& daftarUser);
+    // ===== TRANSAKSI =====
+    static void simpanTransaksi(const std::vector<Transaksi*>& data);
+    static std::vector<Transaksi*> muatTransaksi(const std::vector<Kendaraan>& daftarKendaraan);
 
-    void saveData(const std::string& namaFile,
-                  const std::vector<Transaksi>& daftarTransaksi,
-                  const std::vector<Kendaraan>& daftarKendaraan,
-                  const std::vector<User>& daftarUser);
+    
+
+    // ===== USER =====
+    static void simpanUser(const std::vector<User*>& data);
+    static std::vector<User*> muatUser();
+
+private:
+    // Cegah instansiasi FileManager
+    FileManager() = delete;
 };
+
 
 #endif // !defined(EA_6F47406B_4219_44bb_9E07_9365A625F8A6__INCLUDED_)

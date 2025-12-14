@@ -21,6 +21,8 @@ public:
 
     virtual ~Kendaraan();
     
+    std::string getNama() const;
+    std::string getJenis() const;
     int getId() const;
     double getHargaSewa() const;
     bool isTersedia() const;
