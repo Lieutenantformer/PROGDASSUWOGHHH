@@ -9,11 +9,11 @@
 #define EA_0BE0888E_6E96_45a5_B032_339179260F5F__INCLUDED_
 
 #include <string>
-#include "User.h"
+#include <vector>
 
-class FileManager;   // forward declaration
-class Kendaraan;
-class Transaksi;
+#include "User.h"
+#include "Transaksi.h"
+#include "Kendaraan.h"
 
 class Admin : public User
 {
@@ -30,5 +30,11 @@ public:
 
     void loadData(const std::string& namaFile);
     void simpanData(const std::string& namaFile);
+
+private:
+    std::vector<Transaksi> daftarTransaksi;
+    std::vector<Kendaraan> daftarKendaraan;
+    std::vector<User> daftarUser;
 };
+
 #endif // !defined(EA_0BE0888E_6E96_45a5_B032_339179260F5F__INCLUDED_)

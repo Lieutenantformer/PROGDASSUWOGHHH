@@ -7,44 +7,78 @@
 
 #include "Pembayaran.h"
 #include <iostream>
+#include <algorithm>
 
-// Constructor
 Pembayaran::Pembayaran()
-    : pembayaranId(0),
-      jumlahBayar(0.0),
-      metode(""),
-      status(false)
+    : metode(MetodePembayaran::INVALID),
+      jumlahBayar(0.0)
 {
 }
 
-// Destructor
-Pembayaran::~Pembayaran()
+MetodePembayaran Pembayaran::parseMetode(const std::string& input) const
 {
+    std::string m = input;
+    std::transform(m.begin(), m.end(), m.begin(), ::toupper);
+
+    if (m == "CASH")
+        return MetodePembayaran::CASH;
+    if (m == "TRANSFER")
+        return MetodePembayaran::TRANSFER;
+    if (m == "E-WALLET" || m == "EWALLET")
+        return MetodePembayaran::EWALLET;
+
+    return MetodePembayaran::INVALID;
 }
 
-// Proses pembayaran
-bool Pembayaran::prosesPembayaran(const std::string& metodeBayar, double totalTagihan)
+bool Pembayaran::prosesPembayaran(const std::string& metodeInput, double jumlah)
 {
-    metode = metodeBayar;
-    jumlahBayar = totalTagihan;
+    metode = parseMetode(metodeInput);
 
-    // Simulasi pembayaran selalu berhasil
-    status = true;
-
-    return status;
-}
-
-// Cetak bukti pembayaran
-void Pembayaran::cetakBukti() const
-{
-    if (!status)
+    if (metode == MetodePembayaran::INVALID)
     {
-        std::cout << "Pembayaran belum berhasil.\n";
-        return;
+        std::cout << "❌ Metode pembayaran tidak valid.\n";
+        return false;
     }
 
-    std::cout << "=== Bukti Pembayaran ===\n";
-    std::cout << "Metode   : " << metode << std::endl;
-    std::cout << "Jumlah   : " << jumlahBayar << std::endl;
-    std::cout << "Status   : Berhasil\n";
+    jumlahBayar = jumlah;
+    return true;
+}
+
+void Pembayaran::cetakBukti() const
+{
+    std::cout << "===== BUKTI PEMBAYARAN =====\n";
+    std::cout << "Jumlah : Rp " << jumlahBayar << "\n";
+    std::cout << "Metode : ";
+
+    switch (metode)
+    {
+    case MetodePembayaran::CASH:
+        std::cout << "Cash";
+        break;
+    case MetodePembayaran::TRANSFER:
+        std::cout << "Transfer";
+        break;
+    case MetodePembayaran::EWALLET:
+        std::cout << "E-Wallet";
+        break;
+    default:
+        std::cout << "Tidak diketahui";
+    }
+
+    std::cout << "\n============================\n";
+}
+
+double Pembayaran::getJumlah() const
+{
+    return jumlahBayar;
+}
+
+MetodePembayaran Pembayaran::getMetode() const
+{
+    return metode;
+}
+
+bool Pembayaran::sudahDibayar() const
+{
+    return jumlahBayar > 0;
 }

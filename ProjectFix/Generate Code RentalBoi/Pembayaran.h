@@ -10,20 +10,31 @@
 
 #include <string>
 
+enum class MetodePembayaran
+{
+    CASH,
+    TRANSFER,
+    EWALLET,
+    INVALID
+};
+
 class Pembayaran
 {
 public:
     Pembayaran();
-    virtual ~Pembayaran();
 
-    bool prosesPembayaran(const std::string& metode, double totalTagihan);
+    bool prosesPembayaran(const std::string& metodeInput, double jumlah);
     void cetakBukti() const;
 
+    double getJumlah() const;
+    MetodePembayaran getMetode() const;
+    bool sudahDibayar() const;
+
 private:
-    int pembayaranId;
+    MetodePembayaran metode;
     double jumlahBayar;
-    std::string metode;
-    bool status; // true = berhasil, false = gagal
+
+    MetodePembayaran parseMetode(const std::string& input) const;
 };
 
 #endif // !defined(EA_A67D9014_FAB6_4088_805D_6146E50D3B5F__INCLUDED_)

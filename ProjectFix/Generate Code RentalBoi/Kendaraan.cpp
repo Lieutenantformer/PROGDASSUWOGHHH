@@ -64,3 +64,8 @@ void Kendaraan::tampilkanInfo() const
     std::cout << "Status         : "
               << (status ? "Tersedia" : "Disewa") << std::endl;
 }
+
+int Kendaraan::getId() const
+{
+    return kendaraanId;
+}

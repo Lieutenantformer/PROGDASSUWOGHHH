@@ -25,10 +25,13 @@ public:
              const std::string& inputPassword);
 
     virtual ~Customer();
-
+    
     bool sewaKendaraan(int durasi, Kendaraan& kendaraan);
-    void kembalikanKendaraan(int transaksiId);
+    bool kembalikanKendaraan(int transaksiId);
     void lihatStatusPenyewaan();
+    Transaksi* getTransaksiTerakhir() const;
+    bool punyaTransaksiAktif() const;
+
 
 private:
     std::vector<Transaksi*> daftarTransaksi;

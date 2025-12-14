@@ -4,29 +4,32 @@
 //  Created on:      14-Dec-2025 1:15:18 AM
 //  Original author: ASUS
 ///////////////////////////////////////////////////////////
-
+#include "Pembayaran.h"
 #include "Transaksi.h"
 #include "Kendaraan.h"
+#include <iostream>
 #include <ctime>
+#include <stdexcept>
 
+int Transaksi::nextId = 1;
 // Constructor
 Transaksi::Transaksi()
-    : transaksiId(0),
+    : transaksiId(nextId++),
       durasiSewa(0),
       tanggalSewa(0),
       tanggalKembali(0),
       totalBiaya(0.0),
-      status(false),
+      status(StatusTransaksi::DISEWA),
       kendaraan(nullptr),
       pembayaran(nullptr)
 {
 }
 
+
 // Destructor
 Transaksi::~Transaksi()
 {
-    // pembayaran bisa dibersihkan di sini jika dimiliki Transaksi
-    // delete pembayaran;
+    delete pembayaran;
 }
 
 // Mulai transaksi penyewaan
@@ -35,17 +38,41 @@ void Transaksi::mulaiTransaksi(Kendaraan& kendaraanRef, int durasi)
     kendaraan = &kendaraanRef;
     durasiSewa = durasi;
     tanggalSewa = std::time(nullptr);
-
-    // tanggal kembali = tanggal sewa + durasi (hari)
     tanggalKembali = tanggalSewa + (durasiSewa * 24 * 60 * 60);
+    status = StatusTransaksi::DISEWA;
+}
 
-    status = true;
+// Tampilkan ringkasan transaksi
+void Transaksi::tampilkanRingkasan() const
+{
+    std::cout << "ID Transaksi : " << transaksiId << "\n";
+    std::cout << "Durasi       : " << durasiSewa << " hari\n";
+    std::cout << "Total Biaya  : "
+              << (status == StatusTransaksi::DISEWA
+                    ? hitungTotalBiaya()
+                    : totalBiaya)
+              << "\n";
+
+    std::cout << "Status       : ";
+    switch (status)
+    {
+        case StatusTransaksi::DISEWA:
+            std::cout << "Disewa (Belum Dibayar)";
+            break;
+        case StatusTransaksi::DIBAYAR:
+            std::cout << "Sudah Dibayar";
+            break;
+        case StatusTransaksi::SELESAI:
+            std::cout << "Selesai";
+            break;
+    }
+    std::cout << "\n";
 }
 
 // Selesaikan transaksi
 void Transaksi::selesaikanTransaksi()
 {
-    status = false;
+    status = StatusTransaksi::SELESAI;
 }
 
 // Hitung total biaya sewa
@@ -60,18 +87,79 @@ double Transaksi::hitungTotalBiaya() const
 // Cek apakah terlambat
 bool Transaksi::isTerlambat() const
 {
-    time_t sekarang = std::time(nullptr);
-    return sekarang > tanggalKembali;
+    return std::time(nullptr) > tanggalKembali;
 }
 
-// Ambil ID transaksi
+// Getter
 int Transaksi::getId() const
 {
     return transaksiId;
 }
 
-// Ambil kendaraan yang disewa
+Kendaraan* Transaksi::getKendaraanPtr() const
+{
+    return kendaraan;
+}
+
 Kendaraan& Transaksi::getKendaraan() const
 {
+    if (!kendaraan)
+        throw std::runtime_error("Kendaraan belum diset");
     return *kendaraan;
+}
+
+time_t Transaksi::getTanggalKembali() const
+{
+    return tanggalKembali;
+}
+
+// Status helpers
+StatusTransaksi Transaksi::getStatus() const
+{
+    return status;
+}
+
+bool Transaksi::isAktif() const
+{
+    return status == StatusTransaksi::DISEWA ||
+           status == StatusTransaksi::DIBAYAR;
+}
+
+bool Transaksi::isSelesai() const
+{
+    return status == StatusTransaksi::SELESAI;
+}
+
+// Pembayaran
+bool Transaksi::prosesPembayaran(const std::string& metode)
+{
+    if (pembayaran != nullptr)
+    {
+        std::cout << "Pembayaran sudah dilakukan.\n";
+        return false;
+    }
+
+    totalBiaya = hitungTotalBiaya();
+
+    pembayaran = new Pembayaran();
+    bool berhasil = pembayaran->prosesPembayaran(metode, totalBiaya);
+
+    if (berhasil)
+        status = StatusTransaksi::DIBAYAR;
+
+    return berhasil;
+}
+
+void Transaksi::cetakBuktiPembayaran() const
+{
+    if (pembayaran)
+        pembayaran->cetakBukti();
+    else
+        std::cout << "Belum ada pembayaran.\n";
+}
+
+bool Transaksi::sudahDibayar() const
+{
+    return status == StatusTransaksi::DIBAYAR ||
+           status == StatusTransaksi::SELESAI;
 }

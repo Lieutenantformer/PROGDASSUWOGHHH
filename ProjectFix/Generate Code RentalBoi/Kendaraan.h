@@ -20,7 +20,8 @@ public:
               double inputHargaSewa);
 
     virtual ~Kendaraan();
-
+    
+    int getId() const;
     double getHargaSewa() const;
     bool isTersedia() const;
     void setStatus(bool statusBaru);

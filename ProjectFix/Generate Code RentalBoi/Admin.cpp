@@ -44,13 +44,13 @@ void Admin::kelolaTransaksi()
 // Load data dari file
 void Admin::loadData(const std::string& namaFile)
 {
-    FileManager fileManager;
-    fileManager.load(namaFile);
+    //FileManager fileManager;
+    //fileManager.load(namaFile);
 }
 
 // Simpan data ke file
 void Admin::simpanData(const std::string& namaFile)
 {
-    FileManager fileManager;
-    fileManager.save(namaFile);
+    //FileManager fileManager;
+    //sfileManager.save(namaFile);
 }
