@@ -73,3 +73,8 @@ void Kendaraan::tampilkanInfo() const
     std::cout << "Harga    : Rp " << hargaSewa << "\n";
     std::cout << "Status   : " << (status ? "Tersedia" : "Disewa") << "\n";
 }
+
+void Kendaraan::setHargaSewa(double harga)
+{
+    hargaSewa = harga;
+}

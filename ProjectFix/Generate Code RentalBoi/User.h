@@ -13,12 +13,6 @@
 
 class User
 {
-protected:
-    int userId;
-    std::string username;
-    std::string password;
-    std::string role;
-
 public:
     User();
     User(int inputUserId,
@@ -28,11 +22,23 @@ public:
 
     virtual ~User();
 
+    // ===== GETTER (WAJIB UNTUK FILEMANAGER) =====
+    int getId() const;
+    std::string getUsername() const;
+    std::string getPassword() const;
     std::string getRole() const;
+
     bool login(const std::string& inputUsername,
                const std::string& inputPassword);
     void logout();
+
+protected:
+    int userId;
+    std::string username;
+    std::string password;
+    std::string role;
 };
+
 
 #endif
  // !defined(EA_FC268E8B_4431_4758_9F18_19507D0783D0__INCLUDED_)

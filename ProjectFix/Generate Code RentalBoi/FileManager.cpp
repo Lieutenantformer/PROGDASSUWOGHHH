@@ -8,7 +8,7 @@
 #include "FileManager.h"
 #include "Kendaraan.h"
 #include "Transaksi.h"
-
+#include "User.h"
 
 #include <fstream>
 #include <sstream>
@@ -131,6 +131,7 @@ std::vector<Transaksi*> FileManager::muatTransaksi(const std::vector<Kendaraan>&
         std::getline(ss, token, '|'); statusInt = std::stoi(token);
 
         // Cari kendaraan
+        // NOTE: const_cast digunakan karena daftarKendaraan dimiliki main
         Kendaraan* kendaraanPtr = nullptr;
         for (const auto& k : daftarKendaraan)
         {
@@ -159,5 +160,67 @@ std::vector<Transaksi*> FileManager::muatTransaksi(const std::vector<Kendaraan>&
 
     file.close();
     std::cout << "✅ Data transaksi dimuat\n";
+    return hasil;
+}
+
+// ================== USER ==================
+
+
+void FileManager::simpanUser(const std::vector<User*>& data)
+{
+    std::ofstream file("user.txt");
+    if (!file.is_open())
+    {
+        std::cerr << "❌ Gagal membuka user.txt\n";
+        return;
+    }
+
+    for (const User* u : data)
+    {
+        if (!u) continue;
+
+        file << u->getId() << "|"
+             << u->getUsername() << "|"
+             << u->getPassword() << "|"
+             << u->getRole() << "\n";
+    }
+
+    file.close();
+    std::cout << "✅ Data user berhasil disimpan\n";
+}
+
+std::vector<User*> FileManager::muatUser()
+{
+    std::vector<User*> hasil;
+    std::ifstream file("user.txt");
+
+    if (!file.is_open())
+    {
+        std::cerr << "⚠ File user.txt belum ada\n";
+        return hasil;
+    }
+
+    std::string baris;
+    while (std::getline(file, baris))
+    {
+        std::stringstream ss(baris);
+        std::string token;
+
+        int id;
+        std::string username;
+        std::string password;
+        std::string role;
+
+        std::getline(ss, token, '|'); id = std::stoi(token);
+        std::getline(ss, username, '|');
+        std::getline(ss, password, '|');
+        std::getline(ss, role, '|');
+
+        User* u = new User(id, username, password, role);
+        hasil.push_back(u);
+    }
+
+    file.close();
+    std::cout << "✅ Data user berhasil dimuat\n";
     return hasil;
 }

@@ -36,6 +36,24 @@ std::string User::getRole() const
     return role;
 }
 
+// Get user ID
+int User::getId() const
+{
+    return userId;
+}
+
+// Get username
+std::string User::getUsername() const
+{
+    return username;
+}
+
+// Get password
+std::string User::getPassword() const
+{
+    return password;
+}
+
 // Login validation
 bool User::login(const std::string& inputUsername,
                  const std::string& inputPassword)

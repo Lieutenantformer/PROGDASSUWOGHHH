@@ -28,6 +28,9 @@ public:
     bool isTersedia() const;
     void setStatus(bool statusBaru);
     void tampilkanInfo() const;
+    void setHargaSewa(double harga);
+    
+
 
 private:
     int kendaraanId;
